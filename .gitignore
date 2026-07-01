@@ -1,6 +1,7 @@
 .bundle/
 .rspec_status
 coverage/
+db/
 tmp/
 vendor/
 

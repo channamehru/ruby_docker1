@@ -1,40 +1,19 @@
 services:
-  monitor:
+  api:
     build: .
+    ports:
+      - "4567:4567"
     environment:
-      REDIS_URL: redis://redis:6379/0
-      SERVICES_FILE: /app/config/services.json
+      DATABASE_URL: sqlite:///app/db/tickets.db
       RACK_ENV: development
-    depends_on:
-      redis:
-        condition: service_healthy
+    volumes:
+      - ticket-data:/app/db
     healthcheck:
       test: ["CMD", "ruby", "-rnet/http", "-e", "exit Net::HTTP.get_response(URI('http://localhost:4567/health')).is_a?(Net::HTTPSuccess) ? 0 : 1"]
       interval: 20s
       timeout: 5s
       retries: 3
 
-  redis:
-    image: redis:7-alpine
-    command: ["redis-server", "--appendonly", "yes"]
-    volumes:
-      - redis-data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  nginx:
-    image: nginx:1.27-alpine
-    ports:
-      - "8080:80"
-    volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
-    depends_on:
-      monitor:
-        condition: service_healthy
-
 volumes:
-  redis-data:
+  ticket-data:
 

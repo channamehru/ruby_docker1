@@ -1,34 +1,25 @@
-# Container Stack Monitor
+# Smart Ticket API
 
-Container Stack Monitor is a Docker-focused portfolio project. It runs a Ruby monitoring API behind Nginx and stores service status checks in Redis.
+Smart Ticket API is a Ruby backend project for managing customer support tickets. It is built with Sinatra, SQLite, RSpec, and Docker.
 
 ## Features
 
-- Multi-container Docker Compose stack.
-- Ruby API service with health, service, check, and metrics endpoints.
-- Redis persistence for service status checks.
-- Nginx reverse proxy on port 8080.
-- Docker health checks for app and Redis.
-- Prometheus-style metrics endpoint.
+- Create support tickets using a JSON API.
+- Automatically score ticket priority from title and tags.
+- List all tickets or filter by status.
+- Resolve open tickets.
+- Persist data in SQLite.
+- Run locally with Docker Compose.
+- Test API behavior with RSpec and Rack::Test.
 
 ## Tech Stack
 
-- Docker and Docker Compose
 - Ruby 3.3
 - Sinatra
-- Redis
-- Nginx
+- Sequel ORM
+- SQLite
 - RSpec
-
-## Architecture
-
-```mermaid
-flowchart TD
-  Browser["Browser or curl"] --> Nginx["Nginx :8080"]
-  Nginx --> Monitor["Ruby Monitor API"]
-  Monitor --> Redis["Redis status store"]
-  Monitor --> Config["services.json"]
-```
+- Docker and Docker Compose
 
 ## Run With Docker
 
@@ -36,48 +27,39 @@ flowchart TD
 docker compose up --build
 ```
 
-Open health endpoint through Nginx:
+Health check:
 
 ```bash
-curl http://localhost:8080/health
+curl http://localhost:4567/health
 ```
 
-List services:
+Create a ticket:
 
 ```bash
-curl http://localhost:8080/services
-```
-
-Record a check:
-
-```bash
-curl -X POST http://localhost:8080/checks \
+curl -X POST http://localhost:4567/tickets \
   -H "Content-Type: application/json" \
-  -d '{"service":"payments-api","status":"healthy","message":"Responded in 80 ms"}'
+  -d '{"title":"Payment failed for VIP customer","customer_email":"client@example.com","tags":["vip","production"]}'
 ```
 
-View metrics:
+List tickets:
 
 ```bash
-curl http://localhost:8080/metrics
+curl http://localhost:4567/tickets
 ```
 
-## Docker Commands To Know
+Resolve a ticket:
 
 ```bash
-docker compose ps
-docker compose logs -f monitor
-docker compose exec redis redis-cli ping
-docker compose down
+curl -X PATCH http://localhost:4567/tickets/TICKET_ID/resolve
 ```
 
 ## Run Tests
 
 ```bash
-docker compose run --rm monitor bundle exec rspec
+docker compose run --rm api bundle exec rspec
 ```
 
 ## Why This Project Helps Selection
 
-This project proves that you can work with Docker beyond a simple Dockerfile. It includes multiple services, internal networking, health checks, reverse proxy configuration, persistent volumes, environment variables, and operational endpoints.
+This project shows practical Ruby backend skills: API endpoints, validation, business logic, database persistence, testing, and Dockerized development. It is simple enough to explain in an interview but complete enough to look professional on GitHub.
 

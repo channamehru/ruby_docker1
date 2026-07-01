@@ -1,4 +1,4 @@
 require_relative "app/app"
 
-run ContainerStackMonitor
+run SmartTicketAPI
 

@@ -1,4 +1,4 @@
-.PHONY: build run test logs status down
+.PHONY: build run test shell
 
 build:
 	docker compose build
@@ -7,14 +7,8 @@ run:
 	docker compose up --build
 
 test:
-	docker compose run --rm monitor bundle exec rspec
+	docker compose run --rm api bundle exec rspec
 
-logs:
-	docker compose logs -f
-
-status:
-	docker compose ps
-
-down:
-	docker compose down
+shell:
+	docker compose run --rm api bash
 
